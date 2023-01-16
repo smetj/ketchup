@@ -23,7 +23,7 @@ pip install git+https://github.com/smetj/ketchup.git
 
 Install a specific version:
 ```
-pip install git+https://github.com/smetj/ketchup.git@v0.1.0
+pip install git+https://github.com/smetj/ketchup.git@v0.1.1
 ```
 
 
@@ -54,9 +54,10 @@ Options:
 - By default `ketchup` considers a question handled when the otherwise
   matching message is tagged with the `:done:` emoji.
 - `--regex-filter` is an regex based filter applied to the returned query
-  results for additional filtering. The default value is `?\s+` which
-  basically means `?` should be followed with at least some whites pace
-  character and not part of some URL or something similar.
+  results for additional filtering. The default value is `\?(\s+|$)` which
+  basically means `?` should be followed with at least some whites space
+  character or a the end of a line and therefor not part of some URL or
+  something similar.
 
 ## CAVEAT
 

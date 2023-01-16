@@ -194,7 +194,7 @@ def query_slack(token: str, query: str) -> Iterator[tuple[str, str, str, str, st
 @click.option(
     "--regex-filter",
     envvar="KETCHUP_REGEX_FILTER",
-    default=r"\?\s+",
+    default=r"\?(\s+|$)",
     help="An additional (regex) filter to apply to the returned messages.",
 )
 def main(token, query, channels, days_back, ignore_users, done_marker, regex_filter):
