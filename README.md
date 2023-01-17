@@ -23,7 +23,7 @@ pip install git+https://github.com/smetj/ketchup.git
 
 Install a specific version:
 ```
-pip install git+https://github.com/smetj/ketchup.git@v0.1.1
+pip install git+https://github.com/smetj/ketchup.git@v0.1.2
 ```
 
 

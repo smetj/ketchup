@@ -9,7 +9,7 @@ from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 PROJECT = "ketchup"
-VERSION = "0.1.1"
+VERSION = "0.1.2"
 
 install_requires = ["arrow==1.2.2", "rich==12.6.0", "slack-sdk==3.19.5", "click==8.1.3"]
 

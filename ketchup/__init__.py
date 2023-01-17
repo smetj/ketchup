@@ -202,9 +202,9 @@ def main(token, query, channels, days_back, ignore_users, done_marker, regex_fil
     results = []
 
     query = build_slack_query(
-        search_term="?",
+        search_term=query,
         channels=[channel.strip() for channel in channels.split(",")],
-        after_date=arrow.utcnow().shift(days=-7).format("YYYY-MM-DD"),
+        after_date=arrow.utcnow().shift(days=0 - int(days_back)).format("YYYY-MM-DD"),
         ignore_users=[user.strip() for user in ignore_users.split(",")],
         done_marker=done_marker,
     )
