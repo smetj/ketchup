@@ -23,7 +23,7 @@ pip install git+https://github.com/smetj/ketchup.git
 
 Install a specific version:
 ```
-pip install git+https://github.com/smetj/ketchup.git@v0.1.2
+pip install git+https://github.com/smetj/ketchup.git@v0.2.0
 ```
 
 
@@ -47,6 +47,18 @@ Options:
 Ketchup requires a YAML configuration file using the following format:
 
 ```yaml
+- name: User
+  enable: true
+  channels:
+    - support-channel
+  days_back: 7
+  done_marker: ':done:'
+  field: $.text
+  ignore_users:
+    - smetj
+  query: '?'
+  regex_substring: null
+  regex_filter: \?(\s+|$)
 - name: PR
   enable: true
   channels:
