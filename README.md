@@ -32,37 +32,60 @@ pip install git+https://github.com/smetj/ketchup.git@v0.1.2
 Usage: ketchup [OPTIONS]
 
 Options:
-  --token TEXT         The Slack token to authenticate. Requires scope
-                       search:read.  [required]
-  --query TEXT         The Slack query term.
-  --channels TEXT      A comma separate list of Slack channels to query.
-                       [required]
-  --days-back INTEGER  The number of days to go back when querying.
-  --ignore-users TEXT  A comma separated list of users to exclude from the
-                       search results.
-  --done-marker TEXT   The emoji used to ignore otherwise matching messages.
-  --regex-filter TEXT  An additional (regex) filter to apply to the returned
-                       messages.
-  --help               Show this message and exit.
+  --token TEXT      The Slack token to authenticate. Requires scope
+                    search:read.  [required]
+  --config TEXT     The config file containing the queries to execute.
+                    [required]
+  --dump_responses  When defined dumps the Slack message format. Useful to
+                    debug the JSONpath syntax.
+  --help            Show this message and exit.
 ```
 
-## Misc
 
-- Each option is available as an environment variable such as `KETCHUP_TOKEN`.
-- By default `ketchup` queries for messages containing a `?`. This can be
-  overridden by `--query`.
-- By default `ketchup` considers a question handled when the otherwise
-  matching message is tagged with the `:done:` emoji.
-- `--regex-filter` is an regex based filter applied to the returned query
-  results for additional filtering. The default value is `\?(\s+|$)` which
-  basically means `?` should be followed with at least some whites space
-  character or a the end of a line and therefor not part of some URL or
-  something similar.
+## Configuration format
+
+Ketchup requires a YAML configuration file using the following format:
+
+```yaml
+- name: PR
+  enable: true
+  channels:
+    - github-messages
+  days_back: 7
+  done_marker: ':done:'
+  field: $.attachments.0.title
+  ignore_users: []
+  query: Pull request opened by
+  regex_substring: '\d\s(.*)?>'
+  regex_filter: .*
+```
+
+### Parameters
+
+- `name`: A name used to identify the query result in the overview.
+- `enable`: Enables the query when set to `true` otherwise it's skipped.
+- `channels`: A list of channels to query. Should contain at least one entry.
+- `days_back`: Defines the amount of days back to query for results.
+- `done_marker`: The emoji which indicates to ignore a message.
+- `field`: Which field to show in the overview in JSONPath format.
+- `ignore_users`: A list of users to ignore. Can be empty.
+- `query`: The term to query for in Slack.
+- `regex_substring`: The sub-string to extract from a message. Can be useful to
+  cleanup output of predictable messages.
+- `regex_filter`: An filter which has to match the content of the field found
+  by `field`.
+
+## Tips
+
+- The `field` value requires [JSONPath
+  format](https://www.baeldung.com/guide-to-jayway-jsonpath). Use the
+  `--dump_responses` parameter to get insight into the complete message to
+  which the JSONPath query runs.
 
 ## CAVEAT
 
 The default values of `ketchup` may or may not catch all the questions users
-ask on a channel. Your mileage might vary. You have been warned.
+ask on a channel. Your mileage might vary.
 
 ## Bugs and support
 

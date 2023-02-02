@@ -9,9 +9,16 @@ from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 PROJECT = "ketchup"
-VERSION = "0.1.2"
+VERSION = "0.2.0"
 
-install_requires = ["arrow==1.2.2", "rich==12.6.0", "slack-sdk==3.19.5", "click==8.1.3"]
+install_requires = [
+    "arrow==1.2.2",
+    "rich==12.6.0",
+    "slack-sdk==3.19.5",
+    "click==8.1.3",
+    "jsonschema==4.17.3",
+    "jsonpath-python==1.0.6",
+]
 
 dependency_links = []
 
@@ -66,9 +73,5 @@ setup(
     namespace_packages=[],
     packages=find_packages(),
     zip_safe=False,
-    entry_points={
-        "console_scripts": [
-            "ketchup = ketchup:main"
-        ]
-    },
+    entry_points={"console_scripts": ["ketchup = ketchup:main"]},
 )
