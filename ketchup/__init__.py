@@ -247,37 +247,38 @@ def main(token, config_file, dump_responses):
 
     for search in config:
 
-        slack_query = build_slack_query(
-            search_term=search["query"],
-            channels=search["channels"],
-            after_date=arrow.utcnow()
-            .shift(days=0 - int(search["days_back"]))
-            .format("YYYY-MM-DD"),
-            ignore_users=search["ignore_users"],
-            done_marker=search["done_marker"],
-        )
+        if search["enable"]:
+            slack_query = build_slack_query(
+                search_term=search["query"],
+                channels=search["channels"],
+                after_date=arrow.utcnow()
+                .shift(days=0 - int(search["days_back"]))
+                .format("YYYY-MM-DD"),
+                ignore_users=search["ignore_users"],
+                done_marker=search["done_marker"],
+            )
 
-        for date, channel, username, permalink, message in query_slack(
-            token, slack_query, search["field"], dump_responses
-        ):
-            if re.search(search["regex_filter"], message):
-                if search["regex_substring"] is not None:
-                    try:
-                        message = re.search(search["regex_substring"], message).group(1)
-                    except Exception as err:
-                        message += f" (unable to extract 1st group of regex {search['regex_substring']} Reason: {err})"
+            for date, channel, username, permalink, message in query_slack(
+                token, slack_query, search["field"], dump_responses
+            ):
+                if re.search(search["regex_filter"], message):
+                    if search["regex_substring"] is not None:
+                        try:
+                            message = re.search(search["regex_substring"], message).group(1)
+                        except Exception as err:
+                            message += f" (unable to extract 1st group of regex {search['regex_substring']} Reason: {err})"
 
-                # remove empty lines
-                message = re.sub(r"\n\s*\n", "\n", message)
-                results.append(
-                    [
-                        date,
-                        channel,
-                        username,
-                        make_clickable(permalink, message),
-                        search["name"],
-                    ]
-                )
+                    # remove empty lines
+                    message = re.sub(r"\n\s*\n", "\n", message)
+                    results.append(
+                        [
+                            date,
+                            channel,
+                            username,
+                            make_clickable(permalink, message),
+                            search["name"],
+                        ]
+                    )
 
     table = build_table(results)
 
