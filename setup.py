@@ -14,7 +14,7 @@ VERSION = "0.2.0"
 install_requires = [
     "arrow==1.2.2",
     "rich==12.6.0",
-    "slack-sdk==3.19.5",
+    "slack-sdk==3.35.0",
     "click==8.1.3",
     "jsonschema==4.17.3",
     "jsonpath-python==1.0.6",

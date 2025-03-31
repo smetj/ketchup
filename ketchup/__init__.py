@@ -50,7 +50,7 @@ CONFIG_SCHEMA = {
             "enable": {"type": "boolean"},
             "channels": {"type": "array", "minLength": 1},
             "days_back": {"type": "integer"},
-            "done_marker": {"type": "string"},
+            "done_markers": {"type": "array"},
             "field": {"type": "string"},
             "ignore_users": {"type": "array"},
             "query": {"type": "string"},
@@ -62,7 +62,7 @@ CONFIG_SCHEMA = {
             "enable",
             "channels",
             "days_back",
-            "done_marker",
+            "done_markers",
             "field",
             "ignore_users",
             "query",
@@ -155,7 +155,7 @@ def build_slack_query(
     channels: List[str],
     after_date: str,
     ignore_users: List[str],
-    done_marker: str,
+    done_markers: str,
 ) -> str:
     """
     Builds a Slack search query using the provided parameters.
@@ -166,7 +166,7 @@ def build_slack_query(
         - after_date: Limit the results to messages newer than the provided
           date (YYYY-MM-DD).
         - ignore_users: Exclude matching messages for the provided users.
-        - done_marker: Exclude messages tagged with this emoji.
+        - done_markers: Exclude messages tagged with this emojis.
 
     Returns:
         - The Slack search query.
@@ -179,7 +179,8 @@ def build_slack_query(
     else:
         query_ignore_users = ""
 
-    query = f"{search_term} {query_channels} after:{after_date} -has:{done_marker} {query_ignore_users}"
+    has_not_query = " ".join([f"-has:{done_marker}" for done_marker in done_markers])
+    query = f"{search_term} {query_channels} after:{after_date} {has_not_query} {query_ignore_users}"
     return query
 
 
@@ -255,7 +256,7 @@ def main(token, config_file, dump_responses):
                 .shift(days=0 - int(search["days_back"]))
                 .format("YYYY-MM-DD"),
                 ignore_users=search["ignore_users"],
-                done_marker=search["done_marker"],
+                done_markers=search["done_markers"],
             )
 
             for date, channel, username, permalink, message in query_slack(
@@ -264,7 +265,9 @@ def main(token, config_file, dump_responses):
                 if re.search(search["regex_filter"], message):
                     if search["regex_substring"] is not None:
                         try:
-                            message = re.search(search["regex_substring"], message).group(1)
+                            message = re.search(
+                                search["regex_substring"], message
+                            ).group(1)
                         except Exception as err:
                             message += f" (unable to extract 1st group of regex {search['regex_substring']} Reason: {err})"
 
